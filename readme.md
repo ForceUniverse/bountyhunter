@@ -1,4 +1,4 @@
-## Cargo ##
+## Bounty Hunter ##
 
 A full text search engine of unstructured documents. It is base upon a reversed index.
 
