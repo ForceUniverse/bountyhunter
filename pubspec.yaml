@@ -1,0 +1,10 @@
+name: bountyhunter
+version: 0.0.1
+author: Joris Hermans <hermansj@gmail.com>
+description: A text search engine
+homepage: https://github.com/jorishermans/bountyhunter
+dependencies:
+  logging: '>=0.9.0 <0.10.0'
+  cargo: '>=0.3.4 <0.4.0'
+dev_dependencies:
+  unittest: '>=0.10.0 <0.10.1'
