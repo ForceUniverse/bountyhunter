@@ -16,10 +16,10 @@ void main() {
         hunter.feedDoc("data types", "In computer science and computer programming, a data type or simply type is a classification identifying one of various types of data, such as real, integer or Boolean, that determines the possible values for that type; the operations that can be done on values of that type; the meaning of the data; and the way values of that type can be stored.");
         hunter.feedDoc("dartlang", "Dart is an open-source Web programming language developed by Google. It was unveiled at the GOTO conference in Aarhus, October 10–12, 2011. The goal of Dart is 'ultimately to replace JavaScript as the lingua franca of web development on the open web platform'. Until then, in order to run in mainstream browsers, Dart relies on a source-to-source compiler to JavaScript. To attempt performance gains, Google engineers have evolved Dart as well as extended JavaScript, since 'pursuing either strategy in isolation [would be] likely to fail.' However, Dart has had mixed reception and the Dart initiative has been criticized by industry leaders for fragmenting the web, in much the same way as VBScript. According to the project site, Dart was 'designed to be easy to write development tools for, well-suited to modern app development, and capable of high-performance implementations.'");
     
-        List<String> results = hunter.search("set architecture");
+        List<Bounty> results = hunter.search("set architecture");
         
         expect(results.length, 1);
-        expect(results.first, "instruction set");
+        expect(results.first.name, "instruction set");
     });
   });
 }

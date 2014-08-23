@@ -5,6 +5,7 @@ class Hunter {
   static String LATEST_DOCID = "latest_docId";
   
   CargoBase cargo;
+  Configuration configuration = new Configuration();
   
   Hunter(this.cargo);
   
@@ -31,24 +32,26 @@ class Hunter {
       cargo["index"] = new Map();
     }
     unstructuredDoc.split(" ").forEach((word) {
-      Set wordSet = cargo["index"][word];
-      if (wordSet==null) {
-        wordSet = new Set();
+      if (!configuration.skipWord(word)) {
+        Set wordSet = cargo["index"][word];
+        if (wordSet==null) {
+          wordSet = new Set();
+        }
+  
+        wordSet.add(docId);
+        cargo["index"][word] = wordSet;
       }
-
-      wordSet.add(docId);
-      cargo["index"][word] = wordSet;
     });
     
     return docId;
   }
   
-  List<String> search(String sentence) {
-    List<String> findDocs = new List();
+  List<Bounty> search(String sentence) {
+    List<Bounty> findDocs = new List();
     if (cargo["index"]!=null) {
       Set docIdsRetrieval;
       for (String term in sentence.split(" ")) {
-        if (cargo["index"][term]!=null) {
+        if (cargo["index"][term]!=null && !configuration.skipWord(term)) {
           if (docIdsRetrieval==null) {
             docIdsRetrieval = cargo["index"][term];
           } else {
@@ -58,7 +61,7 @@ class Hunter {
       }
       
       for (var docId in docIdsRetrieval) {
-        findDocs.add(cargo["docIds"][docId]);
+        findDocs.add(new Bounty(1.0, docId, cargo["docIds"][docId]));
       }
     }
     return findDocs;
