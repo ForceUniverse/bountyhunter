@@ -1,5 +1,7 @@
 ## Bounty Hunter ##
 
+![LOGO!](https://raw.github.com/ForceUniverse/bountyhunter/master/resources/bounty_logo.png)
+
 A full text search engine of unstructured documents. It is base upon a reversed index.
 
 ### Simple usage ###
