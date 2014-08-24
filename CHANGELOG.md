@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the bountyhunter package.
 
+#### Pub version 0.1.0 ####
+
+- ranking algorithm to score the bounties the hunter is searching for
+
 #### Pub version 0.0.3 ####
 
 - fix refeeding, clean postings of the docId in the index

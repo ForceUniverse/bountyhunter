@@ -22,7 +22,6 @@ Search for a document and retrieve the documents containing these words.
 
 ### Todo ###
 
-- Ranking system.
 - Possibility to add words that can be ignored, like stop words
 - Stemming
 
