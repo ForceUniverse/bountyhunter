@@ -7,6 +7,8 @@ class Hunter {
   CargoBase cargo;
   Configuration configuration = new Configuration();
   
+  int _N = 0; 
+  
   Hunter(this.cargo);
   
   int feedDoc(String key, String unstructuredDoc) {
@@ -16,9 +18,9 @@ class Hunter {
       cargo.setItem("docIds", new Map());
     }
     // reverse index
-    if (cargo["index"]==null) {
-      cargo["index"] = new Map();
-    }
+    Map index = cargo.getItemSync("index", defaultValue: new Map()); 
+    // store tf
+    Map tf = cargo.getItemSync("tf", defaultValue: new Map()); 
     
     var docInfo = cargo["docs"][key];
     
@@ -32,15 +34,20 @@ class Hunter {
       docId = docInfo;
       
       // docId already exist so clear the document in the index before re-indexing the new document
-      Map index = cargo["index"];
       index.forEach((key, value) {
         if (value is Set) {
           Set postings = value;
           postings.remove(docId);
         }
       });
+      tf.forEach((key, value) {
+        if (value is Map) {
+          Map mapWithDocId = value;
+          
+          mapWithDocId.remove(docId);
+        }
+      });
     }
-    
     
     unstructuredDoc.split(" ").forEach((word) {
       if (!configuration.skipWord(word)) {
@@ -51,8 +58,12 @@ class Hunter {
   
         wordSet.add(docId);
         cargo["index"][word] = wordSet;
+        
+        _setTfInStore(docId, word);
       }
     });
+    
+    _calcN();
     
     return docId;
   }
@@ -71,11 +82,52 @@ class Hunter {
         }
       }
       
+      // calculate scores for every document
+      int N = cargo["docIds"].length;
       for (var docId in docIdsRetrieval) {
-        findDocs.add(new Bounty(1.0, docId, cargo["docIds"][docId]));
+        Vector scorings = new Vector();
+        for (String term in sentence.split(" ")) {
+          int tf = cargo["tf"][term]!=null ? cargo["tf"][term][docId] : 0;
+          Set postings = cargo["index"][term];
+          int df = postings!=null ? postings.length : 0;
+          
+          double score = (1 + Math.log(tf)) * Math.log(N/df);
+          scorings.add(score);
+        }
+        Vector normScoring = scorings.normalize();
+        double totalScore = normScoring.avg();
+        
+        findDocs.add(new Bounty(totalScore, docId, cargo["docIds"][docId]));
       }
     }
     return findDocs;
+  }
+  
+  // set a term frequency in a certain document
+  void _setTfInStore(int docId, String word) {
+    Map tf_map = cargo["tf"][word];
+    if (tf_map==null) {
+       tf_map = new Map();
+    }
+    if (tf_map[docId]==null) {
+       tf_map[docId] = 0;
+    } 
+    tf_map[docId]++;
+    cargo["tf"][word] = tf_map;
+  }
+  
+  void _calcN() {
+    Map tf = cargo.getItemSync("tf", defaultValue: new Map()); 
+    _N = 0;
+    tf.forEach((key, value) {
+      if (value is Map) {
+         Map counters = value;
+                
+         counters.forEach((key, int count) {
+           _N +=count;
+         }); 
+       }
+    });
   }
   
   int _latestDocId() {
