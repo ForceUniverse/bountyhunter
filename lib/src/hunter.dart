@@ -100,6 +100,8 @@ class Hunter {
         findDocs.add(new Bounty(totalScore, docId, cargo["docIds"][docId]));
       }
     }
+    // sort the bounties on score
+    findDocs.sort((Bounty a, Bounty b) => a.compareTo(b));
     return findDocs;
   }
   
