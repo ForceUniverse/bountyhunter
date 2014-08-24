@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the bountyhunter package.
 
+#### Pub version 0.0.3 ####
+
+- fix refeeding, clean postings of the docId in the index
+
 #### Pub version 0.0.2 ####
 
 - adding stop word configuration

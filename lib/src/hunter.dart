@@ -15,6 +15,11 @@ class Hunter {
       cargo.setItem("docs", new Map());
       cargo.setItem("docIds", new Map());
     }
+    // reverse index
+    if (cargo["index"]==null) {
+      cargo["index"] = new Map();
+    }
+    
     var docInfo = cargo["docs"][key];
     
     int docId;
@@ -25,12 +30,18 @@ class Hunter {
       cargo["docIds"][docId] = key; 
     } else {
       docId = docInfo;
+      
+      // docId already exist so clear the document in the index before re-indexing the new document
+      Map index = cargo["index"];
+      index.forEach((key, value) {
+        if (value is Set) {
+          Set postings = value;
+          postings.remove(docId);
+        }
+      });
     }
     
-    // reverse index
-    if (cargo["index"]==null) {
-      cargo["index"] = new Map();
-    }
+    
     unstructuredDoc.split(" ").forEach((word) {
       if (!configuration.skipWord(word)) {
         Set wordSet = cargo["index"][word];
