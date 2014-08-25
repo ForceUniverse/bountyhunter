@@ -30,43 +30,52 @@ class Hunter {
       docs_map[key] = docId;
       cargo["docs"] = docs_map;
       
-      docIds_map[docId] = key;
+      docIds_map["${docId}"] = key;
       cargo["docIds"] = docIds_map;
     } else {
       docId = docInfo;
       
       // docId already exist so clear the document in the index before re-indexing the new document
+      List removals = new List();
       index.forEach((key, value) {
-        if (value is Set) {
-          Set postings = value;
+        if (value is List) {
+          List postings = value;
           postings.remove(docId);
         }
       });
+      removals.forEach((o) => index.remove(o));
+      removals.clear();
       tf.forEach((key, value) {
         if (value is Map) {
           Map mapWithDocId = value;
           
-          mapWithDocId.remove(docId);
+          mapWithDocId.remove("${docId}");
+          
+          if (mapWithDocId.length==0) {
+            removals.add(key);
+          }
         }
       });
+      removals.forEach((o) => tf.remove(o));
     }
     
     List words = unstructuredDoc.split(" ");
     for (String word in words) {
       if (!configuration.skipWord(word)) {
-        Set wordSet = index[word];
+        List wordSet = index[word];
         if (wordSet==null) {
-          wordSet = new Set();
+          wordSet = new List();
         }
-  
-        wordSet.add(docId);
-        index[word] = wordSet;
+        if (!wordSet.contains(docId)) {
+            wordSet.add(docId);
+            index[word] = wordSet;
+        }
         
-        tf = _setTfInStore(tf, docId, word);
+        tf = _setTfInStore(tf, "${docId}", word);
       }
     }
-    cargo["index"] = index;
     cargo["tf"] = tf;
+    cargo["index"] = index;
     
     return docId;
   }
@@ -78,29 +87,31 @@ class Hunter {
       for (String term in sentence.split(" ")) {
         if (cargo["index"][term]!=null && !configuration.skipWord(term)) {
           if (docIdsRetrieval==null) {
-            docIdsRetrieval = cargo["index"][term];
+            docIdsRetrieval = convertListToSet(cargo["index"][term]);
           } else {
-            docIdsRetrieval = docIdsRetrieval.intersection(cargo["index"][term]);
+            docIdsRetrieval = docIdsRetrieval.intersection(convertListToSet(cargo["index"][term]));
           }
         }
       }
       
       // calculate scores for every document
       int N = cargo["docIds"].length;
-      for (var docId in docIdsRetrieval) {
-        Vector scorings = new Vector();
-        for (String term in sentence.split(" ")) {
-          int tf = cargo["tf"][term]!=null ? cargo["tf"][term][docId] : 0;
-          Set postings = cargo["index"][term];
-          int df = postings!=null ? postings.length : 0;
+      if (docIdsRetrieval!=null) {
+        for (var docId in docIdsRetrieval) {
+          Vector scorings = new Vector();
+          for (String term in sentence.split(" ")) {
+            int tf = cargo["tf"][term]!=null ? cargo["tf"][term]["${docId}"] : 0;
+            Set postings = convertListToSet(cargo["index"][term]);
+            int df = postings!=null ? postings.length : 0;
+            
+            double score = (1 + Math.log(tf)) * Math.log(N/df);
+            scorings.add(score);
+          }
+          Vector normScoring = scorings.normalize();
+          double totalScore = normScoring.avg();
           
-          double score = (1 + Math.log(tf)) * Math.log(N/df);
-          scorings.add(score);
+          findDocs.add(new Bounty(totalScore, docId, cargo["docIds"]["${docId}"]));
         }
-        Vector normScoring = scorings.normalize();
-        double totalScore = normScoring.avg();
-        
-        findDocs.add(new Bounty(totalScore, docId, cargo["docIds"][docId]));
       }
     }
     // sort the bounties on score
@@ -109,7 +120,7 @@ class Hunter {
   }
   
   // set a term frequency in a certain document
-  Map _setTfInStore(Map tf, int docId, String word) {
+  Map _setTfInStore(Map tf, String docId, String word) {
     Map tf_map = tf[word];
     if (tf_map==null) {
        tf_map = new Map();
@@ -126,7 +137,7 @@ class Hunter {
   int _latestDocId() {
     int latestDocId = cargo[LATEST_DOCID];
     if (latestDocId==null) {
-      cargo[LATEST_DOCID] = 0;
+      cargo[LATEST_DOCID] = 1;
       latestDocId = 0;
     } else {
       cargo[LATEST_DOCID]++;
