@@ -5,7 +5,9 @@ class Hunter {
   static String LATEST_DOCID = "latest_docId";
   
   CargoBase cargo;
+  
   Configuration configuration = new Configuration();
+  Normalizer normalizer = new Normalizer();
   
   int _N = 0; 
   
@@ -61,6 +63,7 @@ class Hunter {
     
     List words = unstructuredDoc.split(" ");
     for (String word in words) {
+      word = normalizer.normalize(word);
       if (!configuration.skipWord(word)) {
         List wordSet = index[word];
         if (wordSet==null) {
@@ -101,6 +104,7 @@ class Hunter {
           Vector scorings = new Vector();
           List terms = sentence.split(" ");
           for (String term in sentence.split(" ")) {
+            term = normalizer.normalize(term);
             int tf = cargo["tf"][term]!=null ? cargo["tf"][term]["${docId}"] : 0;
             Set postings = convertListToSet(cargo["index"][term]);
             int df = postings!=null ? postings.length : 0;

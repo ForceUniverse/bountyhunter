@@ -8,3 +8,4 @@ part "src/bounty.dart";
 part "src/configuration.dart";
 part "src/vector.dart";
 part "src/utils.dart";
+part "src/normalizer.dart";
