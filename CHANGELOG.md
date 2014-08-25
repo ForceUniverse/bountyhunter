@@ -2,6 +2,14 @@
 
 This file contains highlights of what changes on each version of the bountyhunter package.
 
+#### Pub version 0.1.2+1 ####
+
+- improve scoring
+
+#### Pub version 0.1.2 ####
+
+- make bounty hunter jsonable
+
 #### Pub version 0.1.1 ####
 
 - refactor code to work on the client

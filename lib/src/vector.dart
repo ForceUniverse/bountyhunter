@@ -20,7 +20,7 @@ class Vector {
     Vector norm = new Vector();
     double length = this.length();
     for (double value in values) {
-      norm.add(value/length);
+       norm.add((value != 0.0) ? value/length : value);
     }
     return norm;
   }
@@ -34,6 +34,7 @@ class Vector {
   }
   
   double avg() {
-    return sum() / values.length;
+    double sumValue = sum();
+    return sumValue==0.0 ? sumValue / values.length : sumValue;
   }
 }

@@ -99,6 +99,7 @@ class Hunter {
       if (docIdsRetrieval!=null) {
         for (var docId in docIdsRetrieval) {
           Vector scorings = new Vector();
+          List terms = sentence.split(" ");
           for (String term in sentence.split(" ")) {
             int tf = cargo["tf"][term]!=null ? cargo["tf"][term]["${docId}"] : 0;
             Set postings = convertListToSet(cargo["index"][term]);
@@ -107,8 +108,11 @@ class Hunter {
             double score = (1 + Math.log(tf)) * Math.log(N/df);
             scorings.add(score);
           }
-          Vector normScoring = scorings.normalize();
-          double totalScore = normScoring.avg();
+          // only normalize it when you have more then one terms
+          if (terms.length>1) {
+            scorings = scorings.normalize();
+          }
+          double totalScore = scorings.avg();
           
           findDocs.add(new Bounty(totalScore, docId, cargo["docIds"]["${docId}"]));
         }
