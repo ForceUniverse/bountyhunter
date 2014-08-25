@@ -13,10 +13,8 @@ class Hunter {
   
   int feedDoc(String key, String unstructuredDoc) {
     // lookup if doc already exist!
-    if (cargo["docs"]==null) {
-      cargo.setItem("docs", new Map());
-      cargo.setItem("docIds", new Map());
-    }
+    Map docs_map = cargo.getItemSync("docs", defaultValue: new Map()); 
+    Map docIds_map = cargo.getItemSync("docIds", defaultValue: new Map()); 
     // reverse index
     Map index = cargo.getItemSync("index", defaultValue: new Map()); 
     // store tf
@@ -28,8 +26,12 @@ class Hunter {
     if (docInfo==null) {
       // put docId info into persistence
       docId = _latestDocId();
-      cargo["docs"][key] = docId;
-      cargo["docIds"][docId] = key; 
+
+      docs_map[key] = docId;
+      cargo["docs"] = docs_map;
+      
+      docIds_map[docId] = key;
+      cargo["docIds"] = docIds_map;
     } else {
       docId = docInfo;
       
@@ -49,21 +51,22 @@ class Hunter {
       });
     }
     
-    unstructuredDoc.split(" ").forEach((word) {
+    List words = unstructuredDoc.split(" ");
+    for (String word in words) {
       if (!configuration.skipWord(word)) {
-        Set wordSet = cargo["index"][word];
+        Set wordSet = index[word];
         if (wordSet==null) {
           wordSet = new Set();
         }
   
         wordSet.add(docId);
-        cargo["index"][word] = wordSet;
+        index[word] = wordSet;
         
-        _setTfInStore(docId, word);
+        tf = _setTfInStore(tf, docId, word);
       }
-    });
-    
-    _calcN();
+    }
+    cargo["index"] = index;
+    cargo["tf"] = tf;
     
     return docId;
   }
@@ -106,8 +109,8 @@ class Hunter {
   }
   
   // set a term frequency in a certain document
-  void _setTfInStore(int docId, String word) {
-    Map tf_map = cargo["tf"][word];
+  Map _setTfInStore(Map tf, int docId, String word) {
+    Map tf_map = tf[word];
     if (tf_map==null) {
        tf_map = new Map();
     }
@@ -115,21 +118,9 @@ class Hunter {
        tf_map[docId] = 0;
     } 
     tf_map[docId]++;
-    cargo["tf"][word] = tf_map;
-  }
-  
-  void _calcN() {
-    Map tf = cargo.getItemSync("tf", defaultValue: new Map()); 
-    _N = 0;
-    tf.forEach((key, value) {
-      if (value is Map) {
-         Map counters = value;
-                
-         counters.forEach((key, int count) {
-           _N +=count;
-         }); 
-       }
-    });
+    tf[word] = tf_map;
+    
+    return tf;
   }
   
   int _latestDocId() {

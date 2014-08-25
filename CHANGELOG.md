@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the bountyhunter package.
 
+#### Pub version 0.1.1 ####
+
+- refactor code to work on the client
+
 #### Pub version 0.1.0 ####
 
 - ranking algorithm to score the bounties the hunter is searching for
