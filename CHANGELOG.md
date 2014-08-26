@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the bountyhunter package.
 
+#### Pub version 0.1.3 ####
+
+- adding normalizers to the hunter
+
 #### Pub version 0.1.2+1 ####
 
 - improve scoring
