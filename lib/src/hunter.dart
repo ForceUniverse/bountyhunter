@@ -88,6 +88,7 @@ class Hunter {
     if (cargo["index"]!=null) {
       Set docIdsRetrieval;
       for (String term in sentence.split(" ")) {
+        term = normalizer.normalize(term);
         if (cargo["index"][term]!=null && !configuration.skipWord(term)) {
           if (docIdsRetrieval==null) {
             docIdsRetrieval = convertListToSet(cargo["index"][term]);

@@ -3374,14 +3374,16 @@ var $$ = {};
       return t1.docId_1;
     },
     search$1: function(_, sentence) {
-      var findDocs, t1, t2, t3, docIdsRetrieval, term, $N, docId, scorings, terms, t4, word, t5, tf, postings, df, sumValue, totalScore;
+      var findDocs, t1, t2, t3, docIdsRetrieval, word, t4, $N, docId, scorings, terms, t5, tf, postings, df, sumValue, totalScore;
       findDocs = [];
       t1 = this.cargo;
       if (t1.getItemSync$1("index") != null) {
         for (t2 = J.split$1$s(sentence, " "), t2 = new H.ListIterator(t2, t2.length, 0, null), t3 = this.configuration, docIdsRetrieval = null; t2.moveNext$0();) {
-          term = t2._current;
-          if (J.$index$asx(t1.getItemSync$1("index"), term) != null && !C.JSArray_methods.contains$1(t3.stopWords, term))
-            docIdsRetrieval = docIdsRetrieval == null ? S.convertListToSet(J.$index$asx(t1.getItemSync$1("index"), term)) : docIdsRetrieval.intersection$1(S.convertListToSet(J.$index$asx(t1.getItemSync$1("index"), term)));
+          word = J.toLowerCase$0$s(t2._current);
+          t4 = H.JSSyntaxRegExp_makeNative("[^\\w\\s]", false, true, false);
+          word = H.stringReplaceAllUnchecked(word, new H.JSSyntaxRegExp("[^\\w\\s]", t4, null, null), "");
+          if (J.$index$asx(t1.getItemSync$1("index"), word) != null && !C.JSArray_methods.contains$1(t3.stopWords, word))
+            docIdsRetrieval = docIdsRetrieval == null ? S.convertListToSet(J.$index$asx(t1.getItemSync$1("index"), word)) : docIdsRetrieval.intersection$1(S.convertListToSet(J.$index$asx(t1.getItemSync$1("index"), word)));
         }
         $N = J.get$length$asx(t1.getItemSync$1("docIds"));
         if (docIdsRetrieval != null)
