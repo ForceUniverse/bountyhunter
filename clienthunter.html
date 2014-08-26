@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clienthunter</title>
+    
+    <script async type="application/dart" src="clienthunter.dart"></script>
+    <script async src="packages/browser/dart.js"></script>
+    
+    <link rel="stylesheet" href="clienthunter.css">
+    <link rel="stylesheet" href="bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1>Bounty Hunter</h1>
+    
+          <p>A full text search engine written in Dart based upon a reversed index stored in the localstorage!</p>
+          <p>Bounty Hunter can be used in the browser but also on the server. Under the hood it uses the package Cargo.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="titleInput">Title</label>
+            <input type="text" class="form-control" id="titleInput" placeholder="Enter a title">
+          </div>
+          <div class="form-group">
+            <label for="docInput">Document</label>
+            <textarea id="docInput" class="form-control" rows="3"></textarea>
+          </div>
+          <button id="btnFeed" type="button" class="btn btn-default">Feed document</button>
+        </div>
+        <div class="col-md-6">
+          <div>What are we searching for?</div>
+          <div class="input-group">
+            <input id="txtSearch" type="text" class="form-control">
+            <span class="input-group-btn">
+              <button id="btnSearch" class="btn btn-default" type="button">Search</button>
+            </span>
+          </div>
+          <div id="results">
+            
+          </div>
+        </div>
+      </div>
+      <br /><br />
+      <div class="row">
+          <div class="col-md-12">
+           When you like what you see, just star it! <br/> 
+           <iframe src="http://ghbtns.com/github-btn.html?user=ForceUniverse&repo=bountyhunter&type=watch&count=true" height="30" width="118" frameborder="0" scrolling="0" style="width:118px; height: 30px;" allowTransparency="true"></iframe>
+          </div>
+      </div>
+    </div>
+    
+  </body>
+</html>
