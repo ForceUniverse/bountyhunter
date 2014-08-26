@@ -21,6 +21,10 @@ Feed document into the system so it can be indexed.
 Search for a document and retrieve the documents containing these words.
 
 	hunter.search( "document fix" );
+	
+### Example ###
+
+[Client Hunter](http://forceuniverse.github.io/bountyhunter/)
 
 ### Todo ###
 
@@ -36,7 +40,7 @@ pull request with you fix.
 
 #### Twitter ####
 
-Follow us on twitter https://twitter.com/usethedartforce
+Follow us on [twitter](https://twitter.com/usethedartforce)
 
 #### Google+ ####
 
