@@ -24,7 +24,7 @@ Search for a document and retrieve the documents containing these words.
 	
 ### Example ###
 
-[Client Hunter](http://forceuniverse.github.io/bountyhunter/)
+[Client Hunter](http://forceuniverse.github.io/bountyhunter/) - [code](https://github.com/jorishermans/clienthunter)
 
 ### Todo ###
 
