@@ -31,7 +31,7 @@ Search for a document and retrieve the documents containing these words.
 ### Todo ###
 
 - Possibility to add words that can be ignored, like stop words
-- Stemming
+- Stemming for other languages
 
 ### Contributing ###
  
