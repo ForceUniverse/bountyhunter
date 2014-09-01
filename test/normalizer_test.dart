@@ -19,4 +19,12 @@ void main() {
         
         expect(word, "cool");
     });
+  test('test stemmer', () {
+          String word = "traditional";
+          Normalizer normalizer = new Normalizer();
+          
+          word = normalizer.normalize(word);
+          
+          expect(word, "tradit");
+      });
 }

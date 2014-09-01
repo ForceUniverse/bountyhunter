@@ -1,3 +1,5 @@
+[![Build Status](https://drone.io/github.com/ForceUniverse/bountyhunter/status.png)](https://drone.io/github.com/ForceUniverse/bountyhunter/latest)
+
 ## Bounty Hunter ##
 
 ![LOGO!](https://raw.github.com/ForceUniverse/bountyhunter/master/resources/bounty_logo.png)

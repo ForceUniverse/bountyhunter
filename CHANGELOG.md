@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the bountyhunter package.
 
+#### Pub version 0.1.4 ####
+
+- introduce stemming, with the porter stemmer implemenation
+
 #### Pub version 0.1.3+1 ####
 
 - fix term normalization

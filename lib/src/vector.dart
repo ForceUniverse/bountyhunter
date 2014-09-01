@@ -4,7 +4,7 @@ class Vector {
   
   List<double> values = new List<double>();
   
-  void add(double value) {
+  add(double value) {
     values.add(value);
   }
   

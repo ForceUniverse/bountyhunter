@@ -9,3 +9,6 @@ part "src/configuration.dart";
 part "src/vector.dart";
 part "src/utils.dart";
 part "src/normalizer.dart";
+
+part "src/stemming/porter_stemmer.dart";
+part "src/stemming/stemmer.dart";
