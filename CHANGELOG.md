@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the bountyhunter package.
 
+#### Pub version 0.1.4+1 ####
+
+- update cargo dependency 
+
 #### Pub version 0.1.4 ####
 
 - introduce stemming, with the porter stemmer implemenation

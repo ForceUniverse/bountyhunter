@@ -4,7 +4,7 @@ import 'package:bountyhunter/bountyhunter.dart';
 
 void main() {
   // First tests!
-  Cargo storage = new Cargo(MODE: CargoMode.FILE, path: "../store/");
+  Cargo storage = new Cargo(MODE: CargoMode.FILE, conf: {"path": "../store/"});
 
   storage.start().then((_) {
     
