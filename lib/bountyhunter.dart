@@ -1,6 +1,7 @@
 library bountyhunter;
 
 import "dart:math" as Math;
+import "dart:async";
 import "package:cargo/cargo_base.dart";
 
 part "src/hunter.dart";

@@ -18,7 +18,13 @@ Construct an instance of Hunter.
 
 Feed document into the system so it can be indexed.
 
-	hunter.feedDoc( "hello world", "This is a hello world document ... fix");
+	hunter.feedDocSync( "hello world", "This is a hello world document ... fix");
+	
+You can also feed a document asynchronous and then it will use the asynchronous methods from Cargo.
+
+	hunter.feedDoc( "hello world", "This is a hello world document ... fix").then((int docId) {
+		// do stuff here!
+	});
 
 Search for a document and retrieve the documents containing these words.
 

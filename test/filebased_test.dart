@@ -12,12 +12,12 @@ void main() {
     // create a new instance of Hunter 
     Hunter hunter = new Hunter( storage );
     test('test filebased hunter search', () {
-        hunter.feedDoc("instruction set", "This is a small sentence with set architect");
-        hunter.feedDoc("data types", "What can we do?");
-        hunter.feedDoc("dartlang", "Just opensource!");
+        hunter.feedDocSync("instruction set", "This is a small sentence with set architect");
+        hunter.feedDocSync("data types", "What can we do?");
+        hunter.feedDocSync("dartlang", "Just opensource!");
     
         // lets refeed instruction set!
-        hunter.feedDoc("instruction set", "Just refeed this instructions");
+        hunter.feedDocSync("instruction set", "Just refeed this instructions");
         
         List<Bounty> results = hunter.search("set architecture");
         

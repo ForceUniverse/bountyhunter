@@ -13,73 +13,97 @@ class Hunter {
   
   Hunter(this.cargo);
   
-  int feedDoc(String key, String unstructuredDoc) {
-    // lookup if doc already exist!
-    Map docs_map = cargo.getItemSync("docs", defaultValue: new Map()); 
-    Map docIds_map = cargo.getItemSync("docIds", defaultValue: new Map()); 
-    // reverse index
-    Map index = cargo.getItemSync("index", defaultValue: new Map()); 
-    // store tf
-    Map tf = cargo.getItemSync("tf", defaultValue: new Map()); 
-    
-    var docInfo = cargo["docs"][key];
-    
+  Future<int> feedDoc(String key, String unstructuredDoc) {
+    // lookup if doc already exist
+    Completer completer = new Completer();
+    Future.wait([cargo.getItem("docs", defaultValue: new Map()), 
+                 cargo.getItem("docIds", defaultValue: new Map()),
+                 cargo.getItem("index", defaultValue: new Map()),
+                 cargo.getItem("tf", defaultValue: new Map())]).then((values) {
+      Map docs_map = values[0];
+      Map docIds_map = values[1]; 
+      // reverse index
+      Map index = values[2]; 
+      // store tf
+      Map tf = values[3]; 
+      
+      completer.complete(_feedDocBy(key, unstructuredDoc, docs_map, docIds_map, index, tf));
+    });
+    return completer.future;
+  }
+  
+  int feedDocSync(String key, String unstructuredDoc) {
+      // lookup if doc already exist!
+      Map docs_map = cargo.getItemSync("docs", defaultValue: new Map()); 
+      Map docIds_map = cargo.getItemSync("docIds", defaultValue: new Map()); 
+      // reverse index
+      Map index = cargo.getItemSync("index", defaultValue: new Map()); 
+      // store tf
+      Map tf = cargo.getItemSync("tf", defaultValue: new Map());  
+        
+      return _feedDocBy(key, unstructuredDoc, docs_map, docIds_map, index, tf);
+    }
+  
+  int _feedDocBy(String key, String unstructuredDoc, Map docs_map, Map docIds_map, Map index, Map tf) {
+    var docInfo = docs_map[key];
+              
     int docId;
     if (docInfo==null) {
-      // put docId info into persistence
-      docId = _latestDocId();
+       // put docId info into persistence
+       docId = _latestDocId();
 
-      docs_map[key] = docId;
-      cargo["docs"] = docs_map;
-      
-      docIds_map["${docId}"] = key;
-      cargo["docIds"] = docIds_map;
+       docs_map[key] = docId;
+       cargo["docs"] = docs_map;
+                
+       docIds_map["${docId}"] = key;
+       cargo["docIds"] = docIds_map;
     } else {
-      docId = docInfo;
-      
-      // docId already exist so clear the document in the index before re-indexing the new document
-      List removals = new List();
-      index.forEach((key, value) {
-        if (value is List) {
-          List postings = value;
-          postings.remove(docId);
-        }
-      });
-      removals.forEach((o) => index.remove(o));
-      removals.clear();
-      tf.forEach((key, value) {
-        if (value is Map) {
-          Map mapWithDocId = value;
-          
-          mapWithDocId.remove("${docId}");
-          
-          if (mapWithDocId.length==0) {
-            removals.add(key);
+       docId = docInfo;
+                
+       // docId already exist so clear the document in the index before re-indexing the new document
+       List removals = new List();
+       index.forEach((key, value) {
+          if (value is List) {
+              List postings = value;
+              postings.remove(docId);
           }
-        }
-      });
-      removals.forEach((o) => tf.remove(o));
+       });
+       removals.forEach((o) => index.remove(o));
+       removals.clear();
+       tf.forEach((key, value) {
+         if (value is Map) {
+             Map mapWithDocId = value;
+                    
+             mapWithDocId.remove("${docId}");
+                    
+             if (mapWithDocId.length==0) {
+                 removals.add(key);
+             }
+         }
+       });
+       removals.forEach((o) => tf.remove(o));
     }
-    
+              
     List words = unstructuredDoc.split(" ");
     for (String word in words) {
-      word = normalizer.normalize(word);
-      if (!configuration.skipWord(word)) {
-        List wordSet = index[word];
-        if (wordSet==null) {
-          wordSet = new List();
-        }
-        if (!wordSet.contains(docId)) {
-            wordSet.add(docId);
-            index[word] = wordSet;
-        }
-        
-        tf = _setTfInStore(tf, "${docId}", word);
-      }
+         word = normalizer.normalize(word);
+         if (!configuration.skipWord(word)) {
+             List wordSet = index[word];
+             if (wordSet==null) {
+                 wordSet = new List();
+             }
+             if (!wordSet.contains(docId)) {
+                  wordSet.add(docId);
+                  index[word] = wordSet;
+             }
+                  
+             tf = _setTfInStore(tf, "${docId}", word);
+         }
     }
+    
     cargo["tf"] = tf;
     cargo["index"] = index;
-    
+              
     return docId;
   }
   
