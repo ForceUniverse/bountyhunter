@@ -177,7 +177,7 @@ class Hunter {
       cargo[LATEST_DOCID] = 1;
       latestDocId = 0;
     } else {
-      cargo[LATEST_DOCID]++;
+      cargo[LATEST_DOCID] = latestDocId + 1;
     }
     return latestDocId;
   }
