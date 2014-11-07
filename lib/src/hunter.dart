@@ -19,7 +19,8 @@ class Hunter {
     Future.wait([cargo.getItem("docs", defaultValue: new Map()), 
                  cargo.getItem("docIds", defaultValue: new Map()),
                  cargo.getItem("index", defaultValue: new Map()),
-                 cargo.getItem("tf", defaultValue: new Map())]).then((values) {
+                 cargo.getItem("tf", defaultValue: new Map()),
+                 cargo.getItem(LATEST_DOCID)]).then((values) {
       Map docs_map = values[0];
       Map docIds_map = values[1]; 
       // reverse index
@@ -27,7 +28,9 @@ class Hunter {
       // store tf
       Map tf = values[3]; 
       
-      completer.complete(_feedDocBy(key, unstructuredDoc, docs_map, docIds_map, index, tf));
+      int latestDocId = values[4];
+      
+      completer.complete(_feedDocBy(key, unstructuredDoc, docs_map, docIds_map, index, tf, latestDocId));
     });
     return completer.future;
   }
@@ -40,17 +43,19 @@ class Hunter {
       Map index = cargo.getItemSync("index", defaultValue: new Map()); 
       // store tf
       Map tf = cargo.getItemSync("tf", defaultValue: new Map());  
+      
+      int latestDocId = cargo.getItemSync(LATEST_DOCID);
         
-      return _feedDocBy(key, unstructuredDoc, docs_map, docIds_map, index, tf);
+      return _feedDocBy(key, unstructuredDoc, docs_map, docIds_map, index, tf, latestDocId);
     }
   
-  int _feedDocBy(String key, String unstructuredDoc, Map docs_map, Map docIds_map, Map index, Map tf) {
+  int _feedDocBy(String key, String unstructuredDoc, Map docs_map, Map docIds_map, Map index, Map tf, int latestDocId) {
     var docInfo = docs_map[key];
               
     int docId;
     if (docInfo==null) {
        // put docId info into persistence
-       docId = _latestDocId();
+       docId = _latestDocId(latestDocId);
 
        docs_map[key] = docId;
        cargo["docs"] = docs_map;
@@ -167,8 +172,7 @@ class Hunter {
     return tf;
   }
   
-  int _latestDocId() {
-    int latestDocId = cargo[LATEST_DOCID];
+  int _latestDocId(int latestDocId) {
     if (latestDocId==null) {
       cargo[LATEST_DOCID] = 1;
       latestDocId = 0;
