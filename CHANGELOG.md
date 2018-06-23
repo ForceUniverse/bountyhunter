@@ -2,6 +2,10 @@
 
 This file contains highlights of what changes on each version of the bountyhunter package.
 
+#### Pub version 0.1.6 ####
+
+- update logging package and cargo package to the latest version on pub 
+
 #### Pub version 0.1.5 & 0.1.5+1 ####
 
 - provide async and sync methods for feedDoc on the hunter class. 
